@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 
 import { Button } from "../components/Button";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 import { confluxPortalConnect } from "../utils/confluxPortal";
 import { Context as UserContext } from "../contexts/UserContext";
@@ -30,6 +31,7 @@ const NotLogged = () => {
         padding="16px 64px"
         onClick={handleClick}
       >
+        <AccountBalanceWalletIcon sx={{ marginRight: "0.5rem" }} fontSize="large" />
         Connect Wallet
       </Button>
     </Box>

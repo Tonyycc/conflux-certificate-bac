@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "../Button";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 import { confluxPortalConnect } from "../../utils/confluxPortal";
 import { formatAddress } from "../../utils/Address";
@@ -104,10 +104,13 @@ const Header = () => {
           </li>
         </ul>
         <ButtonWrappers>
-          <Button marginRight={64} disabled>
+          <Button marginRight={32} disabled>
             Testnet Network
           </Button>
-          <Button onClick={cfxAddress !== "" ? handleClick : () => null}>
+          <Button
+            startIcon={<AccountBalanceWalletIcon />}
+            onClick={cfxAddress !== "" ? handleClick : () => null}
+          >
             {cfxAddress !== "" ? formatAddress(cfxAddress) : "Connect Wallet"}
           </Button>
         </ButtonWrappers>
