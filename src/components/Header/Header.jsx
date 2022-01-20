@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { StyledButton } from "../Button";
 import { useLocation } from "react-router-dom";
+
+import { StyledButton } from "../Button";
+
+import { confluxPortalConnect } from "../../utils/confluxPortal";
+import { formatAddress } from "../../utils/Address";
+import { Context as UserContext } from "../../contexts/UserContext";
 
 const HeaderWrapper = styled.div`
   align-items: center;
@@ -63,6 +68,15 @@ const ButtonWrappers = styled.div``;
 const Header = () => {
   let { pathname } = useLocation();
 
+  const { cfxAddress, updateCfxAddress, updatIsLogged } =
+    useContext(UserContext);
+
+  const handleClick = async () => {
+    const addr = await confluxPortalConnect();
+    updateCfxAddress(addr);
+    updatIsLogged(true);
+  };
+
   return (
     <HeaderWrapper>
       <Box>
@@ -93,8 +107,12 @@ const Header = () => {
           <StyledButton sx={{ marginRight: "16px" }} variant="outlined">
             Testnet Network
           </StyledButton>
-          <StyledButton variant="contained" color="primary">
-            Connect Wallet
+          <StyledButton
+            variant="contained"
+            color="primary"
+            onClick={cfxAddress !== "" ? handleClick : () => null}
+          >
+            {cfxAddress !== "" ? formatAddress(cfxAddress) : "Connect Wallet"}
           </StyledButton>
         </ButtonWrappers>
       </HeaderMenu>
