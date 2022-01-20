@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-import { StyledButton } from "../Button";
+import { Button } from "../Button";
 
 import { confluxPortalConnect } from "../../utils/confluxPortal";
 import { formatAddress } from "../../utils/Address";
@@ -104,16 +104,12 @@ const Header = () => {
           </li>
         </ul>
         <ButtonWrappers>
-          <StyledButton sx={{ marginRight: "16px" }} variant="outlined">
+          <Button marginRight={64} disabled>
             Testnet Network
-          </StyledButton>
-          <StyledButton
-            variant="contained"
-            color="primary"
-            onClick={cfxAddress !== "" ? handleClick : () => null}
-          >
+          </Button>
+          <Button onClick={cfxAddress !== "" ? handleClick : () => null}>
             {cfxAddress !== "" ? formatAddress(cfxAddress) : "Connect Wallet"}
-          </StyledButton>
+          </Button>
         </ButtonWrappers>
       </HeaderMenu>
     </HeaderWrapper>

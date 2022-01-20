@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 
-import { StyledButton } from "../components/Button/Button";
+import { Button } from "../components/Button";
 
 import { confluxPortalConnect } from "../utils/confluxPortal";
 import { Context as UserContext } from "../contexts/UserContext";
@@ -10,18 +10,6 @@ const Box = styled.div`
   display: grid;
   place-items: center;
   width: 100vw;
-`;
-
-const AuthButton = styled(StyledButton)`
-  background: #e55d39;
-  color: #dafafc;
-  font-size: 26px;
-  margin-top: 300px;
-  padding: 16px 64px;
-
-  &:hover {
-    opacity: 0.8;
-  }
 `;
 
 const NotLogged = () => {
@@ -34,7 +22,16 @@ const NotLogged = () => {
   };
   return (
     <Box>
-      <AuthButton onClick={handleClick}>Connect Wallet</AuthButton>
+      <Button
+        backgroundColor="#e55d39"
+        color="#dafafc"
+        fontSize={26}
+        marginTop={300}
+        padding="16px 64px"
+        onClick={handleClick}
+      >
+        Connect Wallet
+      </Button>
     </Box>
   );
 };

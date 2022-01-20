@@ -1,32 +1,54 @@
-import React from "react";
-import styled from "styled-components";
+import React, { isValidElement, cloneElement } from "react";
+import StyledButton from "./StyledButton";
 
-export const StyledButton = styled.button`
-    padding: 8px 16px;
-    border: none;
-    border-radius: 32px;
-    cursor: pointer;
-    outline: none;
-    font-weight: bold;
-
-    &:hover { 
-        opacity: 0.8;
-    }
-`;
-
-const Button = ({
+const Button = (props) => {
+  const {
+    startIcon,
+    endIcon,
+    className,
+    isLoading,
+    disabled,
     children,
-    leftIcon,
-    rightIcon,
-    props,
-}) => {
-    return (
-        <StyledButton {...props}>
-            {leftIcon && leftIcon}
-            {children}
-            {rightIcon && rightIcon}
-        </StyledButton>
-    )
+    ...rest
+  } = props;
+
+  const classNames = className ? [className] : [];
+
+  const isDisabled = isLoading || disabled;
+
+  if (isLoading) {
+    classNames.push("btn-loading");
+  }
+
+  if (isDisabled && !isLoading) {
+    classNames.push("btn-disabled");
+  }
+
+  return (
+    <StyledButton
+      $isLoading={isLoading}
+      className={classNames.join(" ")}
+      disabled={isDisabled}
+      {...rest}
+    >
+      <>
+        {isValidElement(startIcon) &&
+          cloneElement(startIcon, {
+            mr: "0.5rem",
+          })}
+        {children}
+        {isValidElement(endIcon) &&
+          cloneElement(endIcon, {
+            ml: "0.5rem",
+          })}
+      </>
+    </StyledButton>
+  );
+};
+
+Button.defaultProps = {
+  isLoading: false,
+  disabled: false,
 };
 
 export default Button;

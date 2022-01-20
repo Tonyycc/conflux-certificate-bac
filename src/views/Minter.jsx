@@ -2,7 +2,7 @@ import React, { useState, useContext, useCallback } from "react";
 import styled from "styled-components";
 
 import { Container } from "../components/Layout";
-import { StyledButton } from "../components/Button/Button";
+import { Button } from "../components/Button";
 
 import NotLogged from "./NotLogged";
 
@@ -153,9 +153,9 @@ const Minter = () => {
           </Content>
 
           <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "end" }}>
-            <StyledButton disabled={!!!cid} onClick={handleMinting}>
+            <Button disabled={!!!cid} onClick={handleMinting}>
                 Mint Certificate
-            </StyledButton>
+            </Button>
           </div>
         </FormWrapper>
       )}
