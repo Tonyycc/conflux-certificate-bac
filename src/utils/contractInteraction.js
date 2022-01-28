@@ -1,8 +1,9 @@
 const abi = require("../data/abi.json");
 const { Conflux } = require("js-conflux-sdk");
 
-const CONTRACT_ADDRESS = "cfx:aca82m8muzbbjbkp4jemhj7evyyhw5r9vps92vs186";
-const RPC_ENDPOINT = "https://main.confluxrpc.com";
+export const ADMIN_ADDRESS = process.env.REACT_APP_ADMIN_ADDRESS;
+export const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT;
+export const RPC_ENDPOINT = process.env.REACT_APP_CONFLUX_RPC;
 
 export const getTotalSupply = async () => {
   const cfx = await Conflux.create({

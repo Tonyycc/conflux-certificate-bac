@@ -4,8 +4,10 @@ import styled from "styled-components";
 import { Container } from "../components/Layout";
 import { Button } from "../components/Button";
 import Loader from "../components/Icons/Loader";
+import Input from "../components/Input/Input";
 
 import NotLogged from "./NotLogged";
+import NotAdmin from "./NotAdmin";
 
 import { Context as UserContext } from "../contexts/UserContext";
 import { Context as ContractContext } from "../contexts/ContractContext";
@@ -14,17 +16,15 @@ import { pinFileToIPFS, pinJSONToIPFS } from "../utils/pinata";
 import { mintNFT } from "../utils/contractInteraction";
 import { buildNftMetadata } from "../utils/dataConstructor";
 
-import config from "../data/config.json";
-
-const NotAdminText = styled.h3`
-  color: #ff2e00;
-  font-size: 22px;
-`;
+import {ADMIN_ADDRESS} from "../utils/contractInteraction";
 
 const FormWrapper = styled.div`
-  background: rgba(3, 2, 2, 0.5);
+  color: white;
+  background: rgba(3, 2, 2);
   border-radius: 16px;
   padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
 `;
 
 const Content = styled.div`
@@ -50,57 +50,57 @@ const Minter = () => {
 
   const [blockchainTimeStamp, setBlockchainTimeStamp] = useState("");
   const [cid, setCid] = useState("");
-  const [endDate, setEndDate] = useState(""); //parseInt((new Date('2021.11.12').getTime() / 1000).toFixed(0));
+  const [cfxAddressToMint, setCfxAddressToMint] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [unixEndDate, setUnixEndDate] = useState(""); //parseInt((new Date('2021.11.12').getTime() / 1000).toFixed(0));
   const [signedBy, setSignedBy] = useState("");
   const [studentName, setStudentName] = useState("");
+  const [stampingAddress, setStampingAddress] = useState("");
 
   const [isImageUploading, setIsImageUploading] = useState(false);
 
-  const handleMinting = useCallback(async () => {
-    const metadata = buildNftMetadata({
+  const handleMint = useCallback(
+    async (e) => {
+      const metadata = buildNftMetadata({
+        blockchainTimeStamp,
+        cid,
+        endDate: unixEndDate,
+        signedBy,
+        studentName,
+        totalSupply,
+      });
+      try {
+        const cid = await pinJSONToIPFS(metadata);
+        mintNFT(cfxAddressToMint, totalSupply, cid);
+        updateTotalSupply((prevValue) => Number(prevValue) + 1);
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    },
+    [
       blockchainTimeStamp,
+      cfxAddressToMint,
       cid,
-      endDate,
       signedBy,
       studentName,
       totalSupply,
-    });
-    try {
-      const cid = await pinJSONToIPFS(metadata);
-      mintNFT(
-        "cfxtest:aam7cusap85jevvahgffs5merc5vrsmetesswajsep",
-        totalSupply,
-        cid
-      );
-      updateTotalSupply((prevValue) => Number(prevValue) + 1);
-    } catch (error) {
-      console.error(error);
-      return;
-    }
-  }, [
-    blockchainTimeStamp,
-    cid,
-    endDate,
-    signedBy,
-    studentName,
-    totalSupply,
-    updateTotalSupply,
-  ]);
+      unixEndDate,
+      updateTotalSupply,
+    ]
+  );
 
   if (!isLogged) return <NotLogged />;
 
+  if (cfxAddress !== ADMIN_ADDRESS) return <NotAdmin />;
+
   return (
     <Container style={{ marginTop: 64 }}>
-      {cfxAddress !== config.adminAddress && (
-        <NotAdminText>
-          You not have authorization for mint this NFT. Please change your
-          wallet address.
-        </NotAdminText>
-      )}
-
-      {cfxAddress === config.adminAddress && (
+      {cfxAddress === ADMIN_ADDRESS && (
         <FormWrapper>
-          <h2>Mint new Conflux Certificate</h2>
+          <h2 style={{ textAlign: "center", margin: 16, fontSize: 32 }}>
+            📄 Mint new Conflux Certificate 📄
+          </h2>
           <Content>
             <SelectImage
               type="file"
@@ -113,62 +113,91 @@ const Minter = () => {
                 setIsImageUploading(false);
               }}
             />
-
-            <span style={{ marginLeft: "16px" }}>CID:</span>
+          </Content>
+          <Content>
+            <span>CID:</span>
 
             {isImageUploading ? (
               <div style={{ display: "flex" }}>
                 <Loader></Loader>
-                <span style={{ marginLeft: 8 }}>
-                  Uploading Image to IPFS Network, please wait...
-                </span>
+                <span style={{ marginLeft: 8 }}>Uploading Image...</span>
               </div>
             ) : null}
 
-            <p>{cid !== "" && cid}</p>
+            <p>
+              {cid !== "" ? (
+                <a
+                  style={{
+                    color: "white",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                  }}
+                  href={`https://gateway.pinata.cloud/ipfs/${cid}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {cid}🔗
+                </a>
+              ) : (
+                "SELECT IMAGE 🔼"
+              )}
+            </p>
           </Content>
 
-          <Content>
-            <span>Student Name:</span>
-            <input
-              type="text"
-              value={studentName}
-              onChange={(event) => {
-                setStudentName(event.target.value);
-              }}
-            />
-          </Content>
+          <Input
+            label="CFX address to mint"
+            value={cfxAddressToMint}
+            onChange={(event) => {
+              setCfxAddressToMint(event.target.value);
+            }}
+          />
 
-          <Content>
-            <span>End Date (UNIX):</span>
-            <input
-              type="text"
-              value={endDate}
-              onChange={(event) => {
-                setEndDate(event.target.value);
-              }}
-            />
-          </Content>
-          <Content>
-            <span>Signed By:</span>
-            <input
-              type="text"
-              value={signedBy}
-              onChange={(event) => {
-                setSignedBy(event.target.value);
-              }}
-            />
-          </Content>
-          <Content>
-            <span>Blockchain StampId:</span>
-            <input
-              type="text"
-              value={blockchainTimeStamp}
-              onChange={(event) => {
-                setBlockchainTimeStamp(event.target.value);
-              }}
-            />
-          </Content>
+          <Input
+            label="Student Name"
+            name="studentName"
+            value={studentName}
+            onChange={(event) => {
+              setStudentName(event.target.value);
+            }}
+          />
+
+          <Input
+            label="End Date (UNIX)"
+            type="date"
+            value={endDate}
+            onChange={(event) => {
+              setEndDate(event.target.value);
+              setUnixEndDate(
+                parseInt(
+                  (new Date(event.target.value).getTime() / 1000).toFixed(0)
+                )
+              );
+            }}
+          />
+
+          <Input
+            label="Signed By"
+            value={signedBy}
+            onChange={(event) => {
+              setSignedBy(event.target.value);
+            }}
+          />
+
+          <Input
+            label="Blockchain StampId"
+            value={blockchainTimeStamp}
+            onChange={(event) => {
+              setBlockchainTimeStamp(event.target.value);
+            }}
+          />
+
+          <Input
+            label="Stamping Address"
+            value={stampingAddress}
+            onChange={(event) => {
+              setStampingAddress(event.target.value);
+            }}
+          />
 
           <div
             style={{
@@ -178,7 +207,7 @@ const Minter = () => {
               justifyContent: "end",
             }}
           >
-            <Button disabled={!!!cid} onClick={handleMinting}>
+            <Button disabled={!cid} onClick={handleMint}>
               Mint Certificate
             </Button>
           </div>

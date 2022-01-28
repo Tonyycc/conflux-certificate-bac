@@ -1,9 +1,8 @@
 const axios = require("axios");
 const FormData = require("form-data");
 
-const pinataApiKey = "6ddc3889e763274b3aa5";
-const pinataSecretApiKey =
-  "bce80444b1945e7817771f226c02a3430d69bb824f09e59c27d1b8f063370501";
+const pinataApiKey = process.env.REACT_APP_PINATA_API_KEY;
+const pinataSecretApiKey = process.env.REACT_APP_PINATA_SECRET_API_KEY;
 
 export const pinFileToIPFS = (file) => {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
