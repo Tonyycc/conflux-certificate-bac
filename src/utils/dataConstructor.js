@@ -1,7 +1,13 @@
 import metadata from "../data/metadata.json";
 
-const { academicDirector, courseLink, courseName, description, instructor, name } =
-  metadata;
+const {
+  academicDirector,
+  courseLink,
+  courseName,
+  description,
+  instructor,
+  name,
+} = metadata;
 
 export const buildNftMetadata = (data) => {
   const {

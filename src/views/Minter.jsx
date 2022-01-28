@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { Container } from "../components/Layout";
 import { Button } from "../components/Button";
+import Loader from "../components/Icons/Loader";
 
 import NotLogged from "./NotLogged";
 
@@ -46,21 +47,23 @@ const SelectImage = styled.input``;
 const Minter = () => {
   const { cfxAddress, isLogged } = useContext(UserContext);
   const { totalSupply, updateTotalSupply } = useContext(ContractContext);
-  
-  const [blockchainTimeStamp, setBlockchainTimeStamp] = useState("63ab21ef7f1a979bf1128de5bc40c84c89d3a6bd");
+
+  const [blockchainTimeStamp, setBlockchainTimeStamp] = useState("");
   const [cid, setCid] = useState("");
-  const [endDate, setEndDate] = useState("1636696800"); //parseInt((new Date('2021.11.12').getTime() / 1000).toFixed(0));
-  const [signedBy, setSignedBy] = useState("KLCfXDY823gqQK94ywaqwRQ3R6n1");
-  const [studentName, setStudentName] = useState("Luis Antonio Cruz Aguilar");
+  const [endDate, setEndDate] = useState(""); //parseInt((new Date('2021.11.12').getTime() / 1000).toFixed(0));
+  const [signedBy, setSignedBy] = useState("");
+  const [studentName, setStudentName] = useState("");
+
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
   const handleMinting = useCallback(async () => {
     const metadata = buildNftMetadata({
-        blockchainTimeStamp,
-        cid,
-        endDate,
-        signedBy,
-        studentName,
-        totalSupply
+      blockchainTimeStamp,
+      cid,
+      endDate,
+      signedBy,
+      studentName,
+      totalSupply,
     });
     try {
       const cid = await pinJSONToIPFS(metadata);
@@ -74,12 +77,15 @@ const Minter = () => {
       console.error(error);
       return;
     }
-  }, [blockchainTimeStamp,
+  }, [
+    blockchainTimeStamp,
     cid,
     endDate,
     signedBy,
     studentName,
-    totalSupply, updateTotalSupply]);
+    totalSupply,
+    updateTotalSupply,
+  ]);
 
   if (!isLogged) return <NotLogged />;
 
@@ -101,12 +107,24 @@ const Minter = () => {
               accept="image/*"
               onChange={async (event) => {
                 event.preventDefault();
+                setIsImageUploading(true);
                 const cid = await pinFileToIPFS(event.target.files[0]);
                 setCid(cid);
+                setIsImageUploading(false);
               }}
             />
 
             <span style={{ marginLeft: "16px" }}>CID:</span>
+
+            {isImageUploading ? (
+              <div style={{ display: "flex" }}>
+                <Loader></Loader>
+                <span style={{ marginLeft: 8 }}>
+                  Uploading Image to IPFS Network, please wait...
+                </span>
+              </div>
+            ) : null}
+
             <p>{cid !== "" && cid}</p>
           </Content>
 
@@ -152,9 +170,16 @@ const Minter = () => {
             />
           </Content>
 
-          <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "end" }}>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+            }}
+          >
             <Button disabled={!!!cid} onClick={handleMinting}>
-                Mint Certificate
+              Mint Certificate
             </Button>
           </div>
         </FormWrapper>

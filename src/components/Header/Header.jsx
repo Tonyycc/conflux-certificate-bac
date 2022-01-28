@@ -104,12 +104,9 @@ const Header = () => {
           </li>
         </ul>
         <ButtonWrappers>
-          <Button marginRight={32} disabled>
-            Testnet Network
-          </Button>
           <Button
             startIcon={<AccountBalanceWalletIcon />}
-            onClick={cfxAddress !== "" ? handleClick : () => null}
+            onClick={cfxAddress === "" ? handleClick : () => null}
           >
             {cfxAddress !== "" ? formatAddress(cfxAddress) : "Connect Wallet"}
           </Button>

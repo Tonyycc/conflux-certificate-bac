@@ -25,8 +25,8 @@ const Nfts = ({nfts}) => {
         <Box>
             {nfts.map(({ name, image, description }) =>
                 (
-                    <Card>
-                        <Image src={image} alt={name} width={240}/>
+                    <Card key={name}>
+                        <Image src={image} alt={name} width={240} />
                         {name}
                     </Card>
                 ))

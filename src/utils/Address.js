@@ -1,7 +1,4 @@
 export const formatAddress = (cfxAddress) => {
-  return (
-    String(cfxAddress).substring(0, 10) +
-    "..." +
-    String(cfxAddress).substring(38)
-  );
+  let strAddress = String(cfxAddress);
+  return `${strAddress.substring(0, 10)}...${strAddress.substring(38)}`;
 };

@@ -6,17 +6,26 @@ export const Context = createContext({
   updatIsLogged: () => null,
   updateCfxAddress: () => null,
   networkId: null,
+  updateNetworkId: () => null,
 });
 
-const UserContext = ({children}) => {
+const UserContext = ({ children }) => {
   const [cfxAddress, setCfxAddress] = useState("");
   const [isLogged, setIsLogged] = useState(false);
+  const [networkId, setNetworkId] = useState("");
 
   return (
     <Context.Provider
-      value={{ cfxAddress, isLogged, updatIsLogged: setIsLogged, updateCfxAddress: setCfxAddress, networkId: 1 }}
+      value={{
+        cfxAddress,
+        isLogged,
+        updatIsLogged: setIsLogged,
+        updateCfxAddress: setCfxAddress,
+        networkId,
+        updateNetworkId: setNetworkId,
+      }}
     >
-    {children}
+      {children}
     </Context.Provider>
   );
 };
