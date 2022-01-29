@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
@@ -5,7 +6,7 @@ import { Hashicon } from "@emeraldpay/hashicon-react";
 
 import Badge from "../components/Badge/Badge";
 
-import { queryNft } from "../utils/contractInteraction";
+import { queryNft, getTokenOwner } from "../utils/contractInteraction";
 
 const VisorWrapper = styled.div`
   display: grid;
@@ -34,6 +35,7 @@ const Details = styled.div`
 
 const NFT = () => {
   const [metadata, setMetadata] = useState({});
+  const [ownerAddress, setOwnerAddress] = useState("");
 
   let params = useParams();
 
@@ -43,8 +45,14 @@ const NFT = () => {
   }, [params.tokenId]);
 
   useEffect(() => {
+    fethOwnerAddress();
     getNFT();
   }, [getNFT]);
+
+  const fethOwnerAddress = useCallback(async () => {
+    const owner = await getTokenOwner(params.tokenId);
+    setOwnerAddress(owner);
+  }, []);
 
   if (Object.entries(metadata).length === 0)
     return <p>Sorry, this NFT doesn't exist. Check it again or try again.)</p>;
@@ -79,10 +87,7 @@ const NFT = () => {
                 height: 40,
               }}
             >
-              <Hashicon
-                value="cfxtest:aatag9yw22pcu6jbnse58na7nrjf2kn2xuuzb5rps4"
-                size={25}
-              />
+              <Hashicon value={ownerAddress} size={25} />
             </div>
             <p
               style={{
@@ -90,7 +95,7 @@ const NFT = () => {
                 fontWeight: "bold",
               }}
             >
-              cfxtest:aatag9yw22pcu6jbnse58na7nrjf2kn2xuuzb5rps4
+              {ownerAddress}
             </p>
           </div>
         </div>
@@ -105,7 +110,7 @@ const NFT = () => {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(2, auto)",
-              gap: 16
+              gap: 16,
             }}
           >
             {metadata.attributes.map(({ trait_type, value }) => (

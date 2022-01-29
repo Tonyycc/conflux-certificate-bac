@@ -5,6 +5,26 @@ export const ADMIN_ADDRESS = process.env.REACT_APP_ADMIN_ADDRESS;
 export const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT;
 export const RPC_ENDPOINT = process.env.REACT_APP_CONFLUX_RPC;
 
+export const getTokenOwner = async (tokenId) => {
+  const cfx = await Conflux.create({
+    url: RPC_ENDPOINT,
+    logger: console,
+  });
+
+  const contract = cfx.Contract({
+    address: CONTRACT_ADDRESS,
+    abi,
+  });
+
+  try {
+    let response = await contract.ownerOf(tokenId);
+    return response;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+}
+
 export const getTotalSupply = async () => {
   const cfx = await Conflux.create({
     url: RPC_ENDPOINT,
