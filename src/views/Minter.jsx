@@ -1,5 +1,7 @@
-import React, { useState, useContext, useCallback } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 import { Container } from "../components/Layout";
 import { Button } from "../components/Button";
@@ -16,7 +18,7 @@ import { pinFileToIPFS, pinJSONToIPFS } from "../utils/pinata";
 import { mintNFT } from "../utils/contractInteraction";
 import { buildNftMetadata } from "../utils/dataConstructor";
 
-import {ADMIN_ADDRESS} from "../utils/contractInteraction";
+import { ADMIN_ADDRESS } from "../utils/contractInteraction";
 
 const FormWrapper = styled.div`
   color: white;
@@ -58,37 +60,46 @@ const Minter = () => {
   const [stampingAddress, setStampingAddress] = useState("");
 
   const [isImageUploading, setIsImageUploading] = useState(false);
+  const [txHash, setTxHash] = useState("");
 
-  const handleMint = useCallback(
-    async (e) => {
-      const metadata = buildNftMetadata({
-        blockchainTimeStamp,
-        cid,
-        endDate: unixEndDate,
-        signedBy,
-        studentName,
-        totalSupply,
-      });
-      try {
-        const cid = await pinJSONToIPFS(metadata);
-        mintNFT(cfxAddressToMint, totalSupply, cid);
-        updateTotalSupply((prevValue) => Number(prevValue) + 1);
-      } catch (error) {
-        console.error(error);
-        return;
-      }
-    },
-    [
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    if (txHash !== "")
+      return navigate(`/nft/${process.env.REACT_APP_CONTRACT}/${totalSupply}`);
+  }, [txHash]);
+
+  const handleMint = useCallback(async () => {
+    const metadata = buildNftMetadata({
       blockchainTimeStamp,
-      cfxAddressToMint,
       cid,
+      endDate: unixEndDate,
       signedBy,
       studentName,
       totalSupply,
-      unixEndDate,
-      updateTotalSupply,
-    ]
-  );
+      stampingAddress,
+    });
+    try {
+      const cid = await pinJSONToIPFS(metadata);
+      const hash = await mintNFT(cfxAddressToMint, totalSupply, cid);
+      
+      setTxHash(hash);
+      updateTotalSupply((prevValue) => Number(prevValue) + 1);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+  }, [
+    blockchainTimeStamp,
+    cfxAddressToMint,
+    cid,
+    signedBy,
+    stampingAddress,
+    studentName,
+    totalSupply,
+    unixEndDate,
+    updateTotalSupply,
+  ]);
 
   if (!isLogged) return <NotLogged />;
 

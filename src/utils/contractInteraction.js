@@ -50,6 +50,27 @@ export const queryAllNfts = async (totalSupply) => {
   }
 };
 
+export const queryNft = async (tokenId) => {
+  const cfx = await Conflux.create({
+    url: RPC_ENDPOINT,
+    logger: console,
+  });
+
+  const contract = cfx.Contract({
+    address: CONTRACT_ADDRESS,
+    abi,
+  });
+
+  try {
+    let response = await contract.tokenURI(tokenId);
+    const metadata = await fetch(response);
+    return metadata.json();
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 export const mintNFT = async (owner, tokenId, tokenUri) => {
   const conflux = window["conflux"];
 
@@ -65,12 +86,7 @@ export const mintNFT = async (owner, tokenId, tokenUri) => {
     let response = await contract
       .mint(owner, tokenId, tokenUri)
       .sendTransaction({ from: conflux.selectedAddress })
-      .executed();
-    // set a callback instead
-    alert(
-      `https://testnet.confluxscan.io/transaction/${response.transactionHash}`
-    );
-
+      .executed()
     return response;
   } catch (error) {
     console.error(error);

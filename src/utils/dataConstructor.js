@@ -17,6 +17,7 @@ export const buildNftMetadata = (data) => {
     signedBy,
     studentName,
     totalSupply,
+    stampingAddress,
   } = data;
 
   const object = {
@@ -57,6 +58,10 @@ export const buildNftMetadata = (data) => {
         trait_type: "Blockchain StampId",
         value: blockchainTimeStamp,
       },
+      {
+        trait_type: "Stamping Address",
+        value: stampingAddress
+      }
     ],
   };
   return object;
