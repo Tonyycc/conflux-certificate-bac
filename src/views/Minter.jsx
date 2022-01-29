@@ -110,7 +110,7 @@ const Minter = () => {
       {cfxAddress === ADMIN_ADDRESS && (
         <FormWrapper>
           <h2 style={{ textAlign: "center", margin: 16, fontSize: 32 }}>
-            📄 Mint new Conflux Certificate 📄
+            {`📄 Mint new Conflux Certificate #${totalSupply} 📄`}
           </h2>
           <Content>
             <SelectImage
