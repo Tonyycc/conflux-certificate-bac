@@ -1,69 +1,13 @@
 import React, { useContext } from "react";
-import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
-
-import { Button } from "../Button";
 
 import { confluxPortalConnect } from "../../utils/confluxPortal";
 import { formatAddress } from "../../utils/Address";
+
 import { Context as UserContext } from "../../contexts/UserContext";
 
-const HeaderWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  height: 70px;
-  margin-bottom: 32px;
-  width: 100%;
-`;
-
-const Box = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  height: inherit;
-  width: 22%;
-`;
-
-const Typography = styled.h1`
-  font-size: 26px;
-  font-weight: bold;
-`;
-
-const HeaderMenu = styled.div`
-  align-items: center;
-  background: #030202;
-  border-radius: 0px 0px 0px 128px;
-  display: flex;
-  height: inherit;
-  justify-content: space-around;
-  width: 78%;
-
-  ul {
-    display: flex;
-
-    li {
-      margin-right: 64px;
-      font-weight: bold;
-      list-style: none;
-
-      a {
-        color: #9eb1b3;
-        text-decoration: none;
-
-        &:hover {
-          color: #dafafc;
-        }
-      }
-    }
-
-    .active {
-      color: #dafafc;
-    }
-  }
-`;
-
-const ButtonWrappers = styled.div``;
+import { Button } from "../Button";
+import { HeaderWrapper, TitleContainer, Typography, HeaderMenu, ButtonWrappers } from "./styles";
 
 const Header = () => {
   let { pathname } = useLocation();
@@ -79,9 +23,9 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      <Box>
+      <TitleContainer>
         <Typography>Conflux Certificate</Typography>
-      </Box>
+      </TitleContainer>
       <HeaderMenu>
         <ul>
           <li>
@@ -105,6 +49,7 @@ const Header = () => {
         </ul>
         <ButtonWrappers>
           <Button
+            backgroundColor="white"
             onClick={cfxAddress === "" ? handleClick : () => null}
           >
             {cfxAddress !== "" ? formatAddress(cfxAddress) : "Connect Wallet"}
