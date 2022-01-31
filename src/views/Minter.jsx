@@ -215,7 +215,7 @@ const Minter = () => {
               justifyContent: "end",
             }}
           >
-            <Button disabled={!cid} onClick={handleMint}>
+            <Button color="white"disabled={!cid} onClick={handleMint}>
               Mint Certificate
             </Button>
           </div>
