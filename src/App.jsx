@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { GlobalStyle } from "./styles/GlobalStyles";
 
 import { Header } from "./components/Header";
-import { Minter, ViewNfts } from "./views";
-import { NFT } from "./views";
+
+import Minter from "./views/Minter";
+import { ViewNfts } from "./views/ViewNfts";
+import NFT from "./views/NFT";
+import { NotLogged } from "./views/NotLogged";
 
 import { getTotalSupply } from "./utils/contractInteraction";
 import { requireConfluxProvider } from "./utils/confluxPortal";
@@ -12,7 +16,7 @@ import { Context as UserContract } from "./contexts/UserContext";
 import { Context as ContractContext } from "./contexts/ContractContext";
 
 const App = () => {
-  const { updateNetworkId } = useContext(UserContract);
+  const { updateNetworkId, isLogged } = useContext(UserContract);
   const { updateTotalSupply } = useContext(ContractContext);
 
   const queryTotalSupply = useCallback(async () => {
@@ -22,7 +26,7 @@ const App = () => {
 
   useEffect(() => {
     requireConfluxProvider();
-    updateNetworkId(window["conflux"].request({method: "cfx_chainId"}));
+    updateNetworkId(window["conflux"].request({ method: "cfx_chainId" }));
     queryTotalSupply();
   }, [queryTotalSupply, updateNetworkId]);
 
@@ -36,24 +40,40 @@ const App = () => {
     });
   }, [updateNetworkId]);
 
-
   useEffect(() => {
     window["conflux"].on("accountsChanged", (addr) => {
       console.log(addr);
     });
   });
 
+  if (!isLogged) {
+    return (
+      <>
+        <GlobalStyle />
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="*" element={<NotLogged />} />
+          </Routes>
+        </BrowserRouter>
+      </>
+    );
+  }
+
   return (
-    <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Minter />} />
-        <Route path="minter" element={<Minter />} />
-        <Route path="view-nfts" element={<ViewNfts />} />
-        <Route path="nft/:contract/:tokenId" element={<NFT />} />
-        <Route path="*" element={<div>Not Found!</div>} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <GlobalStyle />
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Minter />} />
+          <Route path="minter" element={<Minter />} />
+          <Route path="view-nfts" element={<ViewNfts />} />
+          <Route path="nft/:contract/:tokenId" element={<NFT />} />
+          <Route path="*" element={<div>Not Found!</div>} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 };
 

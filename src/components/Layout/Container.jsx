@@ -1,8 +1,11 @@
-import styled from "styled-components";
+import React from "react";
 
-const Container =  styled.div`
-    margin: 0 auto;
-    max-width: 90%;
-`;
+import { Box } from "../Box";
+
+const Container = ({ children, ...props }) => (
+  <Box mx="auto" maxWidth="90%" {...props}>
+    {children}
+  </Box>
+);
 
 export default Container;

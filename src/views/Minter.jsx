@@ -8,7 +8,6 @@ import { Button } from "../components/Button";
 import Loader from "../components/Icons/Loader";
 import Input from "../components/Input/Input";
 
-import NotLogged from "./NotLogged";
 import NotAdmin from "./NotAdmin";
 
 import { Context as UserContext } from "../contexts/UserContext";
@@ -47,7 +46,7 @@ const Content = styled.div`
 const SelectImage = styled.input``;
 
 const Minter = () => {
-  const { cfxAddress, isLogged } = useContext(UserContext);
+  const { cfxAddress } = useContext(UserContext);
   const { totalSupply, updateTotalSupply } = useContext(ContractContext);
 
   const [blockchainTimeStamp, setBlockchainTimeStamp] = useState("");
@@ -100,8 +99,6 @@ const Minter = () => {
     unixEndDate,
     updateTotalSupply,
   ]);
-
-  if (!isLogged) return <NotLogged />;
 
   if (cfxAddress !== ADMIN_ADDRESS) return <NotAdmin />;
 

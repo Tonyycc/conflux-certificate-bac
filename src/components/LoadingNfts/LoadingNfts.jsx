@@ -52,25 +52,15 @@ const CardLoader = styled.div`
    }
 `;
 
-const Grid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: 1fr;
-    grid-column-gap: 16px;
-    margin-top: 32px;
-`
-
 const LoadingNfts = () => {
     return (
         <>
             <h3>Loading Certificates...</h3>
-            <Grid>
-                <CardLoader />
-                <CardLoader />
-                <CardLoader />
-                <CardLoader />
-                <CardLoader />
-            </Grid>
+            <CardLoader />
+            <CardLoader />
+            <CardLoader />
+            <CardLoader />
+            <CardLoader />
         </>
     );
 }

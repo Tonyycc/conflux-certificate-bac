@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "../Button";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 import { confluxPortalConnect } from "../../utils/confluxPortal";
 import { formatAddress } from "../../utils/Address";
@@ -14,6 +13,7 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   height: 70px;
+  margin-bottom: 32px;
   width: 100%;
 `;
 
@@ -105,7 +105,6 @@ const Header = () => {
         </ul>
         <ButtonWrappers>
           <Button
-            startIcon={<AccountBalanceWalletIcon />}
             onClick={cfxAddress === "" ? handleClick : () => null}
           >
             {cfxAddress !== "" ? formatAddress(cfxAddress) : "Connect Wallet"}
