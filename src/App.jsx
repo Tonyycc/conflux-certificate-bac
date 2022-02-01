@@ -25,23 +25,25 @@ const App = () => {
   }, [updateTotalSupply]);
 
   useEffect(() => {
+    let conflux = window.conflux;
     requireConfluxProvider();
-    updateNetworkId(window["conflux"].request({ method: "cfx_chainId" }));
+    updateNetworkId(conflux.chainId);
     queryTotalSupply();
   }, [queryTotalSupply, updateNetworkId]);
 
   /** Suscriptions to Conflux wallets events */
   useEffect(() => {
-    window["conflux"].on("chainChanged", (chainId) => {
+    window.conflux.on("chainChanged", (chainId) => {
       updateNetworkId(chainId);
     });
-    return window["conflux"].off("chainChanged", (chainId) => {
+    return window.conflux.off("chainChanged", (chainId) => {
       updateNetworkId(chainId);
     });
   }, [updateNetworkId]);
 
   useEffect(() => {
-    window["conflux"].on("accountsChanged", (addr) => {
+    let conflux = window.conflux;
+    conflux.on("accountsChanged", (addr) => {
       console.log(addr);
     });
   });

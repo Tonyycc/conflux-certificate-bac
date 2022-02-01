@@ -6,9 +6,7 @@ export const requireConfluxProvider = () => {
 };
 
 export const confluxPortalConnect = async () => {
-  let requestedAccounts = await conflux.request({
-    method: "cfx_requestAccounts",
-  });
+  let requestedAccounts = await conflux.send("cfx_requestAccounts");
   let account = requestedAccounts[0];
   return account;
 };
